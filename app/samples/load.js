@@ -1,10 +1,17 @@
 var audioContext = new (window.AudioContext || window.webkitAudioContext)();
 var samples = new Object;
+samples.playing = new Object;
+
 samples.play = function(audio) {
 	var source = audioContext.createBufferSource();
 	source.connect(audioContext.destination);
 	source.buffer = samples[audio];
 	source.start(0);
+
+	samples.playing[audio] = true;
+	setTimeout(function() {
+		samples.playing[audio] = false;
+	}, 33);
 }
 
 samples.load = function(sound) {

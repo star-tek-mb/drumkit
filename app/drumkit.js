@@ -72,7 +72,7 @@ document.addEventListener('keydown', function(event) {
 	console.log(event.keyCode);
 });
 
-drumkit.addEventListener('mousedown', function(event) {
+function onTap(event) {
 	var rect = drumkit.getBoundingClientRect();
 	var x =  event.clientX - rect.left;
 	var y = event.clientY - rect.top;
@@ -118,6 +118,17 @@ drumkit.addEventListener('mousedown', function(event) {
 	}
 
 	event.preventDefault();
+}
+
+drumkit.addEventListener('mousedown', onTap, false);
+drumkit.addEventListener('touchend', function(event) {
+	for (var i = 0; i < event.touches.length; i++) {
+		onTap(event.touches[i]);
+	}
 }, false);
 
 draw();
+
+var HOST = location.origin.replace(/^http/, 'ws')
+var socket = new WebSocket(HOST);
+socket.send('hello');

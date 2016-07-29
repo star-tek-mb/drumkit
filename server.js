@@ -24,3 +24,9 @@ wss.on('connection', (ws) => {
 	});
 	ws.on('close', () => console.log('disconnected'));
 });
+
+setInterval(() => {
+	wss.clients.forEach((client) => {
+		client.ping();
+	});
+}, 30000);

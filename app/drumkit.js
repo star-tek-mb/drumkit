@@ -122,10 +122,10 @@ function onTap(event) {
 
 drumkit.addEventListener('mousedown', onTap, false);
 drumkit.addEventListener('touchstart', function(event) {
-	for (var i = 0; i < event.touches.length; i++) {
-		onTap(event.touches[i]);
-	}
 	event.preventDefault();
+	for (var i = 0; i < event.changedTouches.length; i++) {
+		onTap(event.changedTouches[i]);
+	}
 }, false);
 
 draw();

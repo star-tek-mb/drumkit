@@ -1,3 +1,12 @@
+var HOST = location.origin.replace(/^http/, 'ws')
+var ws = new WebSocket(HOST);
+ws.onmessage = function(event) {
+	msg = JSON.parse(event.data);
+	if (msg.type == 'play') {
+		samples.play(msg.data);
+	}
+};
+
 var drumkit = document.getElementById('drumkit');
 var context = drumkit.getContext('2d');
 
@@ -27,94 +36,105 @@ function draw() {
 }
 
 document.addEventListener('keydown', function(event) {
+	var sample = '';
 	switch (event.keyCode) {
 		case 96:
-			samples.play('kick');
+			sample = 'kick';
 			break;
 		case 97:
-			samples.play('tom1');
+			sample = 'tom1';
 			break;
 		case 98:
-			samples.play('tom2');
+			sample = 'tom2';
 			break;
 		case 99:
-			samples.play('tom3');
+			sample = 'tom3';
 			break;
 		case 100:
-			samples.play('splash');
+			sample = 'splash';
 			break;
 		case 101:
-			samples.play('crash');
+			sample = 'crash';
 			break;
 		case 102:
-			samples.play('china');
+			sample = 'china';
 			break;
 		case 103:
-			samples.play('ride1');
+			sample = 'ride1';
 			break;
 		case 104:
-			samples.play('ride2');
+			sample = 'ride2';
 			break;
 		case 13:
-			samples.play('hihat1');
+			sample = 'hihat1';
 			break;
 		case 107:
-			samples.play('hihat2');
+			sample = 'hihat2';
 			break;
 		case 108:
 		case 110:
-			samples.play('snare');
+			sample = 'snare';
 			break;
 		case 105:
-			samples.play('cowbell');
+			sample = 'cowbell';
 			break;
 	}
-	console.log(event.keyCode);
+
+	if (sample != '') {
+		samples.play(sample);
+		ws.send(JSON.stringify({type: 'play', data: sample}));
+	}
 });
 
 function onTap(event) {
 	var rect = drumkit.getBoundingClientRect();
 	var x =  event.clientX - rect.left;
 	var y = event.clientY - rect.top;
+	var sample = '';
 
 	if (x > 318 && y > 60 && x < 318 + 154 && y < 60 + 69) {
-		samples.play('splash');
+		sample = 'splash';
 	}
 	if (x > 221 && y > 159 && x < 221 + 132 && y < 159 + 134) {
-		samples.play('tom1');
+		sample = 'tom1';
 	}
 	if (x > 355 && y > 149 && x < 355 + 141 && y < 149 + 132) {
-		samples.play('tom2');
+		sample = 'tom2';
 	}
 	if ((x > 475 && y > 244 && x < 475 + 169 && y < 244 + 110) || (x > 496 && y > 358 && x < 496 + 102 && y < 358 + 35)) {
-		samples.play('tom3');
+		sample = 'tom3';
 	}
 	if ((x > 0 && y > 110 && x < 0 + 144 && y < 110 + 66) || (x > 16 && y > 154 && x < 16 + 206 && y < 154 + 85)) {
-		samples.play('crash');
+		sample = 'crash';
 	}
 	if ((x > 130 && y > 40 && x < 130 + 181 && y < 40 + 79) || (x > 185 && y > 116 && x < 185 + 136 && y < 116 + 37)) {
-		samples.play('china');
+		sample = 'china';
 	}
 	if ((x > 467 && y > 45 && x < 467 + 274 && y < 45 + 66) || (x > 467 && y > 112 && x < 467 + 206 && y < 112 + 32)) {
-		samples.play('ride2');
+		sample = 'ride2';
 	}
 	if ((x > 544 & y > 144 & x < 544 + 257 && y < 144 + 98) || (x > 678 && y > 112 && x < 678 + 122 && y < 112 + 45)) {
-		samples.play('ride1');
+		sample = 'ride1';
 	}
 	if (x > 641 && y > 232 && x < 641 + 159 && y < 232 + 115) {
-		samples.play('hihat2');
+		sample = 'hihat2';
 	}
 	if ((x > 643 && y > 352 && x < 643 + 157 && y < 352 + 100) || (x > 602 && y > 364 && x < 602 + 57 && y < 364 + 69)) {
-		samples.play('hihat1');
+		sample = 'hihat1';
 	}
 	if (x > 16 && y > 239 && x < 16 + 196 && y < 239 + 229) {
-		samples.play('kick');
+		sample = 'kick';
 	}
 	if (x > 212 && y > 292 && x < 212 + 193 && y < 293 + 122) {
-		samples.play('snare');
+		sample = 'snare';
 	}
 	if ((x > 405 && y > 354 && x < 405 + 82 && y < 354 + 108) || (x > 463 && y > 375 && x < 463 + 50 && y < 375 + 87)) {
-		samples.play('cowbell');
+		sample = 'cowbell';
+	}
+
+	if (sample != '') {
+		samples.play(sample);
+		ws.send(JSON.stringify({type: 'play', data: sample}));
 	}
 
 	event.preventDefault();
@@ -129,7 +149,3 @@ drumkit.addEventListener('touchstart', function(event) {
 }, false);
 
 draw();
-
-var HOST = location.origin.replace(/^http/, 'ws')
-var socket = new WebSocket(HOST);
-socket.send('hello');

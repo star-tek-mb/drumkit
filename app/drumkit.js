@@ -125,6 +125,7 @@ drumkit.addEventListener('touchend', function(event) {
 	for (var i = 0; i < event.touches.length; i++) {
 		onTap(event.touches[i]);
 	}
+	event.preventDefault();
 }, false);
 
 draw();
